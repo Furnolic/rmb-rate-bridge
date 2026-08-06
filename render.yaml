@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: rmb-rate-bridge
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        sync: false
