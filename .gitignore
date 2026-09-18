@@ -9,3 +9,6 @@ sync_contract_sample.json
 simulate_2026_06.json
 compare_report_2026_06.xlsx
 .editor_sdk/
+
+# 静态生成产物（GitHub Actions 自动生成后通过 artifact 部署，不提交到仓库）
+docs/

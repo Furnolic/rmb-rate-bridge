@@ -1,0 +1,47 @@
+name: Fetch SAFE Exchange Rates
+
+# 每个工作日北京时间 10:00 执行（外管局约 9:15 发布）
+on:
+  schedule:
+    - cron: '0 2 * * 1-5'   # UTC 2:00 = CST 10:00, 周一至周五
+  # 允许手动触发
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  fetch-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml pandas openpyxl
+
+      - name: Fetch exchange rates
+        run: python generate_static.py
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
